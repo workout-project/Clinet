@@ -39,9 +39,21 @@ const Home = () => {
         console.log('permission not granted')
       }
 
-      let location = Location.getCurrentPositionAsync({})
-      setLocation(location)
-      console.log(location)
+      let { coords } = await Location.getCurrentPositionAsync()
+      
+      
+      
+      if (coords) {
+        const { latitude, longitude } = coords
+        let response = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude
+        })
+        
+        setLocation(response)
+      }
+      // setLocation(location)
+      // console.log(location)
 
     }
 
@@ -55,14 +67,15 @@ const Home = () => {
 
   // console.log(list.map((item) => console.log(item)))
   
-  
-  let currentLocation = JSON.stringify(location);
-  console.log(currentLocation)
+  console.log(location)
+  // let currentLocation = JSON.stringify(location);
+  // console.log(currentLocation.latitude)
   
   return (
-    <SafeAreaView>
-          <Text>Home page</Text>
-          {!user && (<Button onPress={() => navigation.navigate('Signup')} title='Sign up' />)}
+    
+    <SafeAreaView> 
+      <Text>Home page</Text>
+      {!user && (<Button onPress={() => navigation.navigate('Signup')} title='Sign up' />)}
       {!user && (<Button onPress={() => navigation.navigate('Login')} title='Log in' />)}
       {/* {!user && (<Button onPress={() => navigation.navigate('Signup PT')} title='Sign up as PT' />)} */}
       {user && (<Button onPress={handleClick} title='Log out' />)}

@@ -14,7 +14,7 @@ const Home = () => {
   const navigation = useNavigation()
   const { user } = useUserContext()
   const [list, setList] = useState([])
-  const [location, setLocation] = useState(null)
+  const [location, setLocation] = useState('')
   const [errorMsg, setErrorMsg] = useState(null);
 
   
@@ -24,14 +24,27 @@ const Home = () => {
     }
   
   useEffect(() => {
-    const fetchPT = async () => {
-      const getPT = await axios.get('http://localhost:5000/listPT')
-        .then((res) => {
-          setList(res.data)
-      }).catch((err)=> console.log(err))
-    }
+    setTimeout(() => {
+      const fetchPT = async () => {
+        const getPT = await axios.get('http://localhost:5000/listPT')
+          .then((res) => {
+            setList(res.data)
+          }).catch((err) => console.log(err))
+      }
+      
+
+
+      if (user) {
+        fetchPT()
+      }
+    }, 10);
+    
+  }, [user])
+  
+  useEffect(() => {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+        
       //check we have permission 
       if (status === 'granted') {
         console.log('permission granted')
@@ -40,36 +53,28 @@ const Home = () => {
       }
 
       let { coords } = await Location.getCurrentPositionAsync()
-      
-      
-      
+      setLocation(coords)
+
+
       if (coords) {
         const { latitude, longitude } = coords
         let response = await Location.reverseGeocodeAsync({
           latitude,
           longitude
         })
-        
-        setLocation(response)
-      }
-      // setLocation(location)
-      // console.log(location)
 
+        // setLocation(response[0].postalCode)
+      }
     }
 
-    
-
     if (user) {
-      fetchPT()
       getLocation()
     }
   },[user])
 
-  // console.log(list.map((item) => console.log(item)))
+  console.log('home:', location)
   
-  console.log(location)
   // let currentLocation = JSON.stringify(location);
-  // console.log(currentLocation.latitude)
   
   return (
     
@@ -82,7 +87,7 @@ const Home = () => {
       {user && (<Button onPress={()=>navigation.navigate('User Profile')} title='Profile' />)}
       {user && (<TouchableOpacity onPress={() => navigation.navigate('Personal Trainer')}><Text>personal Trainer</Text></TouchableOpacity>)}
       {/* {user && (<TouchableOpacity onPress={() => navigation.navigate('Personal Trainer')}><Text><PTOverview list={list} /></Text></TouchableOpacity>)} */}
-      <PTOverview list={list} />
+      {location === '' && user ? <Text>Loading...</Text> : <PTOverview list={list} location={location} />}
       
     </SafeAreaView>
   )

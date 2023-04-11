@@ -1,46 +1,77 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import axios from 'axios'
 import { useUserContext } from '../Hooks/UseUserContext'
 import { useNavigation } from '@react-navigation/native'
-import PTProfile from './PTProfile'
+import { postcodeConverter } from '../Hooks/postcodeConvertor'
+import { getDistance, getPreciseDistance } from 'geolib';
+import * as Location from 'expo-location'
 
 
 
 
-const PTOverview = ({list}) => {
-    // const {firstName } = props.firstName
-    // console.log('props', list.length)
-    const { user } = useUserContext()
-    const navigation = useNavigation()
+const PTOverview = ({ list, location }) => {
+  const { user } = useUserContext()
+  const navigation = useNavigation()
+  let distanceList = []
+  
+  const { latitude, longitude } = list[0] ?? {}
+  console.log(latitude)
+  
+
+  
+  
+
+ 
+   
+  
+
+  
+  // getting distance
+  const calculatePreciseDistance = (latitude,longitude) => {
+    if (latitude !== undefined) {
+      var distance = getPreciseDistance(
+        { latitude: location.latitude, longitude: location.longitude },
+        { latitude: latitude, longitude: longitude },
+      );
+      const finalDis = (distance * 0.00062137).toFixed(1)
+      
+      return finalDis
+    }
     
-    // useEffect(() => {
-    //     const fetchPT = async () => {
-    //         const getPT = await axios.get('http://localhost:5000/listPT')
-    //             .then((res) => {
-    //                 console.log(res)
-    //                 setList(res.data)
-    //             }).catch((err) => console.log(err))
-    //     }
+  };
 
-    //     if (user) {
-    //         fetchPT()
-    //     }
-    // }, [])
+  const distance = list.map((item) => {
+    const dis = calculatePreciseDistance(item.latitude, item.longitude)
+    item.distance = dis
+  })
 
-    // console.log(list)
+
+  //getting closest to user 
+
+  list.sort(function (a, b) {
+    return a.distance - b.distance
+  })
+
+
+  const mapping = list.map((item) => <TouchableOpacity style={styles.nameBox} key={item._id} onPress={() => {
+        navigation.navigate('Personal Trainer', { PTDetail: item })}}>
+    <Text>{item.firstName}</Text>
+    <Text>{item.distance} miles from you </Text>
+      </TouchableOpacity>)
 
   return (
     <SafeAreaProvider>
-          {user && (<View>
-              
+          {/* {user && (<View>     
         {list.map((item) => <TouchableOpacity style={styles.nameBox} key={item._id} onPress={() => {
           navigation.navigate('Personal Trainer',{ PTDetail : item})}}>
-          <Text>{item.firstName}
-              </Text>
-              </TouchableOpacity>)}
-          </View>)}
+          <Text>{item.firstName}</Text>
+        </TouchableOpacity>)}
+      </View>)} */}
+      {user && (<View>
+        {mapping}
+      </View>)}
+      
           {/* {user && (<TouchableOpacity onPress={() => navigation.navigate('Personal Trainer')}><Text>personal Trainer</Text></TouchableOpacity>)} */}
           
     </SafeAreaProvider>

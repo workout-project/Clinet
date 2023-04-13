@@ -26,8 +26,9 @@ const Home = () => {
   useEffect(() => {
     setTimeout(() => {
       const fetchPT = async () => {
-        const getPT = await axios.get('http://localhost:5000/listPT')
+        const getPT = await axios.get('http://localhost:8080/signupPTClient')
           .then((res) => {
+            console.log(res.data)
             setList(res.data)
           }).catch((err) => console.log(err))
       }
@@ -72,7 +73,7 @@ const Home = () => {
     }
   },[user])
 
-  console.log('home:', location)
+  console.log('home:', list)
   
   // let currentLocation = JSON.stringify(location);
   

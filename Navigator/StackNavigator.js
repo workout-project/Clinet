@@ -10,6 +10,7 @@ import Profile from '../Components/Profile'
 import PTProfile from '../Components/PTProfile'
 import EditProfile from '../Components/EditProfile'
 import SignupPt from '../Components/SignupPt'
+import ForgotPassword from '../Components/ForgotPassword'
 
 const Stack = createNativeStackNavigator() 
 
@@ -21,6 +22,7 @@ const StackNavigator = () => {
                 <Stack.Screen name='Home' component={Home} />
                 {!user && <Stack.Screen name='Signup' component={!user ? Signup: Home } /> }
         {!user && <Stack.Screen name='Login' component={!user ? Login : Home} />}
+        {!user && <Stack.Screen name='Forgot password' component={!user ? ForgotPassword : Home} />}
         {/*  */}
         {!user && <Stack.Screen name='Signup PT' component={!user ? SignupPt : Home} />}
                 <Stack.Screen name='User Profile' component={Profile}/>

@@ -26,11 +26,17 @@ const Home = () => {
   useEffect(() => {
     setTimeout(() => {
       const fetchPT = async () => {
-        const getPT = await axios.get('http://localhost:8080/signupPTClient')
+        const getPT = await axios.get('http://localhost:8080/signupPTClient', {
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        })
           .then((res) => {
             console.log(res.data)
             setList(res.data)
-          }).catch((err) => console.log(err))
+          }).catch(function (err) {
+            console.log(err)
+          })
       }
       
 

@@ -16,7 +16,9 @@ const PTOverview = ({ list, location }) => {
   let distanceList = []
   
   const { latitude, longitude } = list[0] ?? {}
-  console.log(latitude)
+  console.log('list overview',list[0])
+  // console.log(list[0].latitude, list[0].longitude)
+
   
 
   
@@ -43,8 +45,10 @@ const PTOverview = ({ list, location }) => {
 
   const distance = list.map((item) => {
     const dis = calculatePreciseDistance(item.latitude, item.longitude)
+  
     item.distance = dis
   })
+  
 
 
   //getting closest to user 

@@ -94,7 +94,7 @@ const Home = () => {
       {user && (<Button onPress={()=>navigation.navigate('User Profile')} title='Profile' />)}
       {user && (<TouchableOpacity onPress={() => navigation.navigate('Personal Trainer')}><Text>personal Trainer</Text></TouchableOpacity>)}
       {/* {user && (<TouchableOpacity onPress={() => navigation.navigate('Personal Trainer')}><Text><PTOverview list={list} /></Text></TouchableOpacity>)} */}
-      {location === '' && user ? <Text>Loading...</Text> : <PTOverview list={list} location={location} />}
+      {(location === '' && list === []) ? <Text>Loading...</Text> : <PTOverview list={list} location={location} />}
       
     </SafeAreaView>
   )
